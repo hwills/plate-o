@@ -2,8 +2,8 @@
 //  main.cpp
 //  Philosophers
 //
-//  Created by Morgan Redding on 11/9/15.
-//  Copyright © 2015 Morgan Redding. All rights reserved.
+//  Created by Morgan Redding, Hunter Wills, Alex Tran, and B-Lamb on 11/9/15.
+//  Copyright © 2015 Team Conch. All rights reserved.
 //
 
 #include <iostream>
@@ -21,7 +21,7 @@ std::mutex activity_lock;
 
 Activity* activities;
 
-size_t n = 10;
+size_t n;
 
 void print_activities() {
     for (size_t i = 0; i < n; i++) {
@@ -47,7 +47,7 @@ void* philospher(void* args) {
         activity_lock.unlock();
         
         // eat
-        usleep(rand() % 1000000);
+        sleep(2 + (rand() % 3));
         
         chopsticks[second_chopstick].unlock();
         chopsticks[first_chopstick].unlock();
@@ -59,13 +59,24 @@ void* philospher(void* args) {
         activity_lock.unlock();
         
         // think
-        usleep(rand() % 1000000);
+        sleep(2 + (rand() % 8));
     }
-    
+   
     return nullptr;
 }
 
 int main(int argc, const char * argv[]) {
+    
+    std::cout << "Hey there boy-0, give me some phil-0: (# philosophers?)  >> "  ;
+    std::string user_input;
+    getline(std::cin, user_input);
+    try {
+        n = stoi(user_input);
+    }
+    catch(...) {
+        std::cout << "You want to create a number of philosophers that is not an integer?! I must philosphize on this error..." << std::endl;
+        return -1;
+    }
     
     pthread_t* threads = new pthread_t[n];
     size_t* ids = new size_t[n];
